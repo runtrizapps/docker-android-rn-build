@@ -1,50 +1,25 @@
-# docker-cloud Build
+# docker-android-rn-build
+Docker image for automated Android builds and distribution with nodejs & volta, fastlane, gradle, ImageMagick, jq
 
-Use one of the following Tags: (see below)
+## Usage
 
-ubuntu-standalone
-ubuntu-lazydl
-alpine-standalone
-alpine-lazydl
-latest
-lazydl
+Simply run the container and mount your project to the `/app` folder, then run `fastlane` commands as you usually do.
 
-"latest" and "lazydl" are pointing to the ubuntu images
+```
+$ docker run --rm -v \ 
+  ${PWD}:/app \ 
+  davidgovea/docker-android-rn-build \
+  bundle exec fastlane [lane]
+```
 
+## Docker hub link
 
-# docker-android-sdk
-[![](https://images.microbadger.com/badges/version/runmymind/docker-android-sdk.svg)](https://microbadger.com/images/runmymind/docker-android-sdk "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/runmymind/docker-android-sdk.svg)](https://microbadger.com/images/runmymind/docker-android-sdk "Get your own image badge on microbadger.com")
+https://hub.docker.com/r/davidgovea/docker-android-rn-build
 
-[![](https://images.microbadger.com/badges/version/runmymind/docker-android-sdk:lazydl.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:lazydl "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/runmymind/docker-android-sdk:lazydl.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:lazydl "Get your own image badge on microbadger.com")
+## What Is Inside
 
-[![](https://images.microbadger.com/badges/version/runmymind/docker-android-sdk:ubuntu-lazydl.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:ubuntu-lazydl "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/runmymind/docker-android-sdk:ubuntu-lazydl.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:ubuntu-lazydl "Get your own image badge on microbadger.com")
+Built upon the `:latest` branch of the great [`runmymind/docker-android-sdk/`](https://hub.docker.com/r/runmymind/docker-android-sdk/) image. In addition it installs `ruby`, the latest `fastlane`, `bundle` (fast execution of fastlane), [jq](https://github.com/stedolan/jq), [ripgrep](https://github.com/BurntSushi/ripgrep), [fd](https://github.com/sharkdp/fd), ImageMagick and `gradle 6.5.1`.
 
-[![](https://images.microbadger.com/badges/version/runmymind/docker-android-sdk:ubuntu-standalone.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:ubuntu-standalone "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/runmymind/docker-android-sdk:ubuntu-standalone.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:ubuntu-standalone "Get your own image badge on microbadger.com")
+## Inspired by
 
-[![](https://images.microbadger.com/badges/version/runmymind/docker-android-sdk:alpine-lazydl.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:alpine-lazydl "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/runmymind/docker-android-sdk:alpine-lazydl.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:alpine-lazydl "Get your own image badge on microbadger.com")
-
-[![](https://images.microbadger.com/badges/version/runmymind/docker-android-sdk:alpine-standalone.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:alpine-standalone "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/runmymind/docker-android-sdk:alpine-standalone.svg)](https://microbadger.com/images/runmymind/docker-android-sdk:alpine-standalone "Get your own image badge on microbadger.com")
-
-
-This repository contains Dockerfiles to create Docker images containing the android SDK. There are two flavours for different use cases (lazydl, standalone) and two different linux bases (ubuntu, alpine). Feel free to chose which one suits you best.
-
-**Ubuntu**
-The officialy supported Linux distribution for Android SDK builds. Use this one if you are unsure, which is better.
-
-**Alpine**
-More lightweight Linux Distribution optimized for docker containers.
-
-**Standalone**
-This is the standard expected behaviour. The Android SDK is integrated in the docker image. Use this in your android build on CircleCI, Bitbucket Pipelines, or any other docker enabled CI.
-
-**Lazydl**
-Indeed, there is a lack of documentation and it might be not really intuitive to use the image in this way. The idea is to have two containers for the build process. One of which is the builing container executing the actual build. The other one is the sdk-data container, which downloads the whole SDK into a named docker volume which is shared between both containers.
-I will provide an example docker-compose file to make this more clear. Might take a couple of days, though.
-
-Lazydl can also be used to download and prepare a custom list of sdk components if you only need a portion of the sdk. Just mount a volume in at runtime pointing a list named `package-list-minimal.txt` into `/opt/tools/package-list-minimal.txt` and then run `/opt/tools/entrypoint.sh built-in`. You can also use Lazydl as a base for your own custom image.
+https://hub.docker.com/r/opengamer/android-sdk-gradle-fastlane but with new version of `gradle`, and extra utilities

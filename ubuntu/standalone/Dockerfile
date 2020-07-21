@@ -1,6 +1,4 @@
-FROM ubuntu:18.04
-
-LABEL de.mindrunner.android-docker.flavour="ubuntu-standalone"
+FROM ubuntu:20.04
 
 ENV ANDROID_SDK_HOME /opt/android-sdk-linux
 ENV ANDROID_SDK_ROOT /opt/android-sdk-linux
@@ -28,8 +26,17 @@ RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   vim \
   openssh-client \
   locales \
-  nodejs \
-  npm \
+  # nodejs \
+  # npm \
+
+  # Extensions #
+  build-essential \
+  ruby \
+  ruby-dev \
+  ripgrep \
+  fd-find \
+  jq \
+  imagemagick \
   && apt-get clean
 
 RUN  rm -rf /var/lib/apt/lists/* && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
@@ -47,3 +54,38 @@ WORKDIR /opt/android-sdk-linux
 RUN /opt/tools/entrypoint.sh built-in
 
 CMD /opt/tools/entrypoint.sh built-in
+
+# Extensions #
+
+# Alias find for ubuntu naming
+RUN echo 'alias fd="fdfind"' >> ~/.bashrc
+
+# Installing fastlane
+RUN gem install fastlane
+
+# Installing bundle
+RUN gem install bundle
+
+# Install gradle
+RUN wget https://services.gradle.org/distributions/gradle-6.5.1-bin.zip
+RUN mkdir /opt/gradle
+RUN unzip -d /opt/gradle gradle-6.5.1-bin.zip
+RUN export PATH=$PATH:/opt/gradle/gradle-6.5.1/bin
+
+# bash will load volta() function via .bashrc
+# using $VOLTA_HOME/load.sh
+SHELL ["/bin/bash", "-c"]
+
+# since we're starting non-interactive shell,
+# we wil need to tell bash to load .bashrc manually
+ENV BASH_ENV ~/.bashrc
+# needed by volta() function
+ENV VOLTA_HOME /root/.volta
+# make sure packages managed by volta will be in PATH
+ENV PATH $VOLTA_HOME/bin:$PATH
+
+# install volta
+RUN curl https://get.volta.sh | bash
+
+# Work directory
+WORKDIR /app
