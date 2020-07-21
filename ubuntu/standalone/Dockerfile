@@ -28,7 +28,6 @@ RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   locales \
   # nodejs \
   # npm \
-
   # Extensions #
   build-essential \
   ruby \
