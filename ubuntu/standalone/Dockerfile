@@ -10,8 +10,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install required tools
 # Dependencies to execute Android builds
 
-RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y software-properties-common
-RUN add-apt-repository universe && apt-get update -yqq && apt-get install -y \
+RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   curl \
   expect \
   git \
@@ -30,9 +29,10 @@ RUN add-apt-repository universe && apt-get update -yqq && apt-get install -y \
   # nodejs \
   # npm \
   # Extensions #
+  libssl-dev \
+  libreadline-dev \
+  zlib1g-dev \
   build-essential \
-  ruby \
-  ruby-dev \
   ripgrep \
   fd-find \
   jq \
@@ -62,11 +62,11 @@ CMD /opt/tools/entrypoint.sh built-in
 # Alias find for ubuntu naming
 RUN echo 'alias fd="fdfind"' >> ~/.bashrc
 
-# Installing fastlane
-RUN gem install fastlane
-
-# Installing bundle
-RUN gem install bundle
+# Install rbenv, fastlane & bundler
+RUN echo 'PATH=${HOME}/.rbenv/shims:${HOME}/.rbenv/bin:${PATH}' >> ~/.bashrc && \
+	export PATH=${HOME}/.rbenv/shims:${HOME}/.rbenv/bin:${PATH} && \
+	wget -q https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer -O- | bash && \
+	echo 'eval "$(rbenv init -)"' >> ~/.bashrc && rbenv install -s 2.6.6 && rbenv global 2.6.6 && gem install fastlane && gem install bundler
 
 # Install gradle
 RUN wget https://services.gradle.org/distributions/gradle-6.5.1-bin.zip
