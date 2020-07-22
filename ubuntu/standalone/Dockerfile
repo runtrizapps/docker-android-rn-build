@@ -10,7 +10,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install required tools
 # Dependencies to execute Android builds
 
-RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
+RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y software-properties-common
+RUN add-apt-repository universe && apt-get update -yqq && apt-get install -y \
   curl \
   expect \
   git \
@@ -36,6 +37,7 @@ RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   fd-find \
   jq \
   imagemagick \
+  pngquant \
   git-crypt \
   && apt-get clean
 
